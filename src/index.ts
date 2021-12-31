@@ -3,12 +3,15 @@ import passport from 'passport'
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import { body, validationResult } from 'express-validator'
 
 import { sequelize } from './database'
 
-import { User, GithubUser, GoogleUser, FacebookUser } from './database/models' 
+import { User, GithubUser, GoogleUser, FacebookUser, LocalUser } from './database/models' 
 
-import { githubStrategy, googleStrategy, facebookStrategy } from './auth/strategies'
+import { githubStrategy, googleStrategy, facebookStrategy, localStrategy } from './auth/strategies'
+
+import { generateSalt, hashPassword } from './auth/hashing'
 
 import { APIUser } from './auth/interfaces'
 
@@ -70,6 +73,7 @@ dotenv.config();
           { model: GithubUser },
           { model: GoogleUser },
           { model: FacebookUser }, 
+          { model: LocalUser },
         ]
       });
 
@@ -112,6 +116,19 @@ dotenv.config();
   
         return done(null, foundUser);
 
+      } else if (user && user.provider == 'local' && user.local_user) {
+
+        const foundUser: APIUser = {
+          user_id: user.user_id,
+          provider: user.provider,
+          username: user.local_user.username,
+          avatar_url: user.local_user.avatar_url,
+          disabled: user.disabled,
+          completed: user.completed,
+        }
+  
+        return done(null, foundUser);
+
       } else return done('missing-user', null);
     } catch (error) {
       return done(error, null);
@@ -121,6 +138,7 @@ dotenv.config();
   passport.use(githubStrategy);
   passport.use(googleStrategy);
   passport.use(facebookStrategy);
+  passport.use(localStrategy);
 
   //    __________________  ____  ______     ____  ___   __  __________  __
   //   / ____/  _/_  __/ / / / / / / __ )   / __ \/   | / / / /_  __/ / / /
@@ -198,6 +216,73 @@ dotenv.config();
         return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('signin-success')}&provider=facebook`);
       });
     })(req, res, next);
+  });
+
+  //     __    ____  _________    __       ___   __  __________  __
+  //    / /   / __ \/ ____/   |  / /      /   | / / / /_  __/ / / /
+  //   / /   / / / / /   / /| | / /      / /| |/ / / / / / / /_/ / 
+  //  / /___/ /_/ / /___/ ___ |/ /___   / ___ / /_/ / / / / __  /  
+  // /_____/\____/\____/_/  |_/_____/  /_/  |_\____/ /_/ /_/ /_/ 
+
+  app.post('/auth/local/signin', (req, res, next) => {
+    passport.authenticate('local', (err, user: User, info) => {
+      if (err) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('signin-server-fail')}&provider=local`);
+
+      if (!user && info) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent(info)}&provider=local`);
+
+      if (!user) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('signin-server-fail')}&provider=local`);
+
+      req.logIn(user, (loginErr) => {
+        if (loginErr) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('signin-server-fail')}&provider=local`);
+
+        if (user.disabled) return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('user-disabled')}&provider=local`);
+
+        if (!user.completed) return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('user-incomplete')}&provider=local`);
+
+        return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('signin-success')}&provider=local`);
+      });
+    })(req, res, next);
+  });
+
+  app.post('/auth/local/signup', [
+    body('email').isEmail(),
+    body('password').isLength({ min: 6 }).trim().escape(),
+    body('username').isLength({ min: 6 }).trim().escape()
+  ], async (req: express.Request, res: express.Response, next: any) => {
+    try {
+
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) return res.redirect(`${process.env.CLIENT_URL}/signup?status=${encodeURIComponent('invalid-parameters')}&provider=local`);
+      
+      const { email, password, username } = req.body;
+
+      const localUserByEmail = await LocalUser.findOne({ where: { email }});
+
+      if (localUserByEmail) return res.redirect(`${process.env.CLIENT_URL}/signup?status=${encodeURIComponent('email-in-use')}&provider=local`);
+
+      const salt = generateSalt();
+
+      const hashedPassword = hashPassword(password, salt);
+
+      const newUser = await User.create({
+        provider: 'local'
+      });
+
+      const newLocalUser = await LocalUser.create({
+        username,
+        avatar_url: null,
+        email,
+        password: hashedPassword,
+        salt,
+        user_id: newUser.user_id,
+      });
+
+      return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('user-created')}&provider=local`);
+
+    } catch (error) {
+      return res.redirect(`${process.env.CLIENT_URL}/signup?status=${encodeURIComponent('signup-server-fail')}&provider=local`);
+    }
   });
     
   //     ____  ____  __  ___________________
