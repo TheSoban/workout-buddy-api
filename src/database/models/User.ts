@@ -1,6 +1,6 @@
 import { Model, Table, Column, AutoIncrement, PrimaryKey, IsIn, AllowNull, DataType, Default, HasOne } from "sequelize-typescript"
 
-import { GithubUser, GoogleUser, FacebookUser } from './'
+import { GithubUser, GoogleUser, FacebookUser, LocalUser } from './'
 
 @Table
 class User extends Model {
@@ -50,6 +50,9 @@ class User extends Model {
 
   @HasOne(() => FacebookUser, 'user_id')
   facebook_user: FacebookUser;
+
+  @HasOne(() => LocalUser, 'user_id')
+  local_user: LocalUser;
 }
 
 export default User;
