@@ -1,6 +1,10 @@
-import { Model, Table, Column, AutoIncrement, PrimaryKey, IsIn, AllowNull, DataType, Default, HasOne } from "sequelize-typescript"
+import { Model, Table, Column, AutoIncrement, PrimaryKey, IsIn, AllowNull, DataType, Default, HasOne, HasMany } from "sequelize-typescript"
 
-import { GithubUser, GoogleUser, FacebookUser, LocalUser } from './'
+import { 
+  GithubUser, GoogleUser, FacebookUser, LocalUser, 
+  BodyMeasurement, Comment, WorkoutBlueprint, WorkoutLog,
+  Exercise
+} from './'
 
 @Table
 class User extends Model {
@@ -53,6 +57,21 @@ class User extends Model {
 
   @HasOne(() => LocalUser, 'user_id')
   local_user: LocalUser;
+
+  @HasMany(() => BodyMeasurement)
+  measurements: BodyMeasurement[];
+
+  @HasMany(() => Comment)
+  comments: Comment[];
+
+  @HasMany(() => WorkoutBlueprint)
+  blueprints: WorkoutBlueprint[];
+
+  @HasMany(() => WorkoutLog)
+  workout_logs: WorkoutLog[];
+
+  @HasMany(() => Exercise)
+  created_exercises: Exercise[];
 }
 
 export default User;
