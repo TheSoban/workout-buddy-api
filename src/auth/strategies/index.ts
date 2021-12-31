@@ -1,3 +1,4 @@
 import githubStrategy from './githubStrategy'
+import googleStrategy from './googleStrategy'
 
-export { githubStrategy }
+export { githubStrategy, googleStrategy }

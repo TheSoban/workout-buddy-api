@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import { Sequelize } from 'sequelize-typescript'
 import { 
-  User, GithubUser
+  User, GithubUser, GoogleUser
 } from './models'
 
 dotenv.config();
@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: 'mysql',
     models: [
-      User, GithubUser
+      User, GithubUser, GoogleUser
     ]
   }
 );

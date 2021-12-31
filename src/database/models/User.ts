@@ -1,6 +1,6 @@
 import { Model, Table, Column, AutoIncrement, PrimaryKey, IsIn, AllowNull, DataType, Default, HasOne } from "sequelize-typescript"
 
-import { GithubUser } from './'
+import { GithubUser, GoogleUser } from './'
 
 @Table
 class User extends Model {
@@ -44,6 +44,9 @@ class User extends Model {
 
   @HasOne(() => GithubUser, 'user_id')
   github_user: GithubUser;
+
+  @HasOne(() => GoogleUser, 'user_id')
+  google_user: GoogleUser;
 }
 
 export default User;
