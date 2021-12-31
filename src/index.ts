@@ -6,9 +6,9 @@ import cors from 'cors'
 
 import { sequelize } from './database'
 
-import { User, GithubUser } from './database/models' 
+import { User, GithubUser, GoogleUser } from './database/models' 
 
-import { githubStrategy } from './auth/strategies'
+import { githubStrategy, googleStrategy } from './auth/strategies'
 
 import { APIUser } from './auth/interfaces'
 
@@ -67,7 +67,8 @@ dotenv.config();
     try {
       const user = await User.findByPk(userId, {
         include: [
-          { model: GithubUser }
+          { model: GithubUser },
+          { model: GoogleUser },
         ]
       });
 
@@ -84,6 +85,19 @@ dotenv.config();
   
         return done(null, foundUser);
 
+      } else if (user && user.provider == 'google' && user.google_user) {
+
+        const foundUser: APIUser = {
+          user_id: user.user_id,
+          provider: user.provider,
+          username: user.google_user.display_name,
+          avatar_url: user.google_user.avatar_url,
+          disabled: user.disabled,
+          completed: user.completed,
+        }
+  
+        return done(null, foundUser);
+
       } else return done('missing-user', null);
     } catch (error) {
       return done(error, null);
@@ -91,6 +105,7 @@ dotenv.config();
   });
 
   passport.use(githubStrategy);
+  passport.use(googleStrategy);
 
   //    __________________  ____  ______     ____  ___   __  __________  __
   //   / ____/  _/_  __/ / / / / / / __ )   / __ \/   | / / / /_  __/ / / /
@@ -114,6 +129,32 @@ dotenv.config();
         if (!user.completed) return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('user-incomplete')}&provider=github`);
 
         return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('signin-success')}&provider=github`);
+      });
+    })(req, res, next);
+  });
+
+  //    __________  ____  ________    ______   ____  ___   __  __________  __
+  //   / ____/ __ \/ __ \/ ____/ /   / ____/  / __ \/   | / / / /_  __/ / / /
+  //  / / __/ / / / / / / / __/ /   / __/    / / / / /| |/ / / / / / / /_/ / 
+  // / /_/ / /_/ / /_/ / /_/ / /___/ /___   / /_/ / ___ / /_/ / / / / __  /  
+  // \____/\____/\____/\____/_____/_____/   \____/_/  |_\____/ /_/ /_/ /_/   
+
+  app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+  app.get('/auth/google/callback', (req, res, next) => {
+    passport.authenticate('google', (err: string, user: User, _info: string) => {
+      if (err) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('signin-server-fail')}&provider=google`);
+
+      if (!user) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('signin-client-fail')}&provider=google`);
+
+      req.logIn(user, (loginErr) => {
+        if (loginErr) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('signin-server-fail')}&provider=google`);
+
+        if (user.disabled) return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('user-disabled')}&provider=google`);
+
+        if (!user.completed) return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('user-incomplete')}&provider=google`);
+
+        return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('signin-success')}&provider=google`);
       });
     })(req, res, next);
   });
