@@ -6,9 +6,9 @@ import cors from 'cors'
 
 import { sequelize } from './database'
 
-import { User, GithubUser, GoogleUser } from './database/models' 
+import { User, GithubUser, GoogleUser, FacebookUser } from './database/models' 
 
-import { githubStrategy, googleStrategy } from './auth/strategies'
+import { githubStrategy, googleStrategy, facebookStrategy } from './auth/strategies'
 
 import { APIUser } from './auth/interfaces'
 
@@ -69,6 +69,7 @@ dotenv.config();
         include: [
           { model: GithubUser },
           { model: GoogleUser },
+          { model: FacebookUser }, 
         ]
       });
 
@@ -98,6 +99,19 @@ dotenv.config();
   
         return done(null, foundUser);
 
+      } else if (user && user.provider == 'facebook' && user.facebook_user) {
+
+        const foundUser: APIUser = {
+          user_id: user.user_id,
+          provider: user.provider,
+          username: user.facebook_user.display_name,
+          avatar_url: user.facebook_user.avatar_url,
+          disabled: user.disabled,
+          completed: user.completed,
+        }
+  
+        return done(null, foundUser);
+
       } else return done('missing-user', null);
     } catch (error) {
       return done(error, null);
@@ -106,6 +120,7 @@ dotenv.config();
 
   passport.use(githubStrategy);
   passport.use(googleStrategy);
+  passport.use(facebookStrategy);
 
   //    __________________  ____  ______     ____  ___   __  __________  __
   //   / ____/  _/_  __/ / / / / / / __ )   / __ \/   | / / / /_  __/ / / /
@@ -155,6 +170,32 @@ dotenv.config();
         if (!user.completed) return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('user-incomplete')}&provider=google`);
 
         return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('signin-success')}&provider=google`);
+      });
+    })(req, res, next);
+  });
+
+  //     _________   ________________  ____  ____  __ __    ____  ___   __  __________  __
+  //    / ____/   | / ____/ ____/ __ )/ __ \/ __ \/ //_/   / __ \/   | / / / /_  __/ / / /
+  //   / /_  / /| |/ /   / __/ / __  / / / / / / / ,<     / / / / /| |/ / / / / / / /_/ / 
+  //  / __/ / ___ / /___/ /___/ /_/ / /_/ / /_/ / /| |   / /_/ / ___ / /_/ / / / / __  /  
+  // /_/   /_/  |_\____/_____/_____/\____/\____/_/ |_|   \____/_/  |_\____/ /_/ /_/ /_/   
+
+  app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['public_profile', 'email'] }));
+
+  app.get('/auth/facebook/callback', (req, res, next) => {
+    passport.authenticate('facebook', (err, user: User, info) => {
+      if (err) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('signin-server-fail')}&provider=facebook`);
+
+      if (!user) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('signin-client-fail')}&provider=facebook`);
+
+      req.logIn(user, (loginErr) => {
+        if (loginErr) return res.redirect(`${process.env.CLIENT_URL}/signin?status=${encodeURIComponent('signin-server-fail')}&provider=facebook`);
+
+        if (user.disabled) return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('user-disabled')}&provider=facebook`);
+
+        if (!user.completed) return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('user-incomplete')}&provider=facebook`);
+
+        return res.redirect(`${process.env.CLIENT_URL}?status=${encodeURIComponent('signin-success')}&provider=facebook`);
       });
     })(req, res, next);
   });
