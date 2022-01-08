@@ -1,4 +1,9 @@
-import authRoute from './authRoute'
-import unauthRoute from './unauthRoute'
+import userAuthenticated from './userAuthenticated'
+import userNotAuthenticated from './userNotAuthenticated'
+import userCompleted from './userCompleted'
+import userNotDisabled from './userNotDisabled'
+import validParameters from './validParameters'
+import userMod from './userMod'
+import userAdmin from './userAdmin'
 
-export { authRoute, unauthRoute }
+export { userAuthenticated, userNotAuthenticated, validParameters, userCompleted, userNotDisabled, userMod, userAdmin }
