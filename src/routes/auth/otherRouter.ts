@@ -1,12 +1,12 @@
 import dotenv from 'dotenv'
 import express, { Router } from 'express'
-import { authRoute } from '../../middleware'
+import { userAuthenticated } from '../../middleware'
 
 dotenv.config();
 
 export const otherRouter = Router()
 
-.get("/logout", authRoute, (req: express.Request, res: express.Response) => {
+.get("/logout", userAuthenticated, (req: express.Request, res: express.Response) => {
   req.logout();
   res.status(200).json({
     status: 'success',
@@ -16,7 +16,7 @@ export const otherRouter = Router()
   });
 })
 
-.get("/getuser", authRoute, (req: express.Request, res: express.Response) => res.status(200).json({
+.get("/getuser", userAuthenticated, (req: express.Request, res: express.Response) => res.status(200).json({
   status: 'success',
   response: {
     user: req.user

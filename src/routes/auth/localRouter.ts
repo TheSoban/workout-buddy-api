@@ -1,16 +1,16 @@
 import passport from 'passport'
 import dotenv from 'dotenv'
 import express, { Router } from 'express'
-import { body, validationResult, ValidationError } from 'express-validator'
+import { body } from 'express-validator'
 import { User, LocalUser } from '../../database/models'
-import { unauthRoute } from '../../middleware'
+import { userNotAuthenticated, validParameters } from '../../middleware'
 import { generateSalt, hashPassword } from '../../auth/hashing'
 
 dotenv.config();
 
 export const localRouter = Router()
 
-.post('/signin', unauthRoute, (req, res, next) => {
+.post('/signin', userNotAuthenticated, (req, res, next) => {
   passport.authenticate('local', (err: string, user: User, info: string) => {
     if (err) return res.status(500).json({
       status: 'error',
@@ -72,25 +72,12 @@ export const localRouter = Router()
   })(req, res, next);
 })
 
-.post('/signup', unauthRoute, [
+.post('/signup', userNotAuthenticated, [
   body('email').isEmail(),
   body('password').isLength({ min: 6 }).trim().escape(),
   body('username').isLength({ min: 6 }).trim().escape()
-], async (req: express.Request, res: express.Response, next: any) => {
+], validParameters, async (req: express.Request, res: express.Response, next: any) => {
   try {
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      const formatter = ({ msg, param }: ValidationError) => ({ [param]: msg });
-      return res.status(400).json({
-        status: 'error',
-        response: {
-          message: 'invalid-parameters',
-          errors: errors.formatWith(formatter).array()
-        }
-      });
-    }
     
     const { email, password, username } = req.body;
 
