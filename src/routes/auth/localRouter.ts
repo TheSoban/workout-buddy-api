@@ -3,14 +3,14 @@ import dotenv from 'dotenv'
 import express, { Router } from 'express'
 import { body, validationResult, ValidationError } from 'express-validator'
 import { User, LocalUser } from '../../database/models'
-
+import { unauthRoute } from '../../middleware'
 import { generateSalt, hashPassword } from '../../auth/hashing'
 
 dotenv.config();
 
 export const localRouter = Router()
 
-.post('/signin', (req, res, next) => {
+.post('/signin', unauthRoute, (req, res, next) => {
   passport.authenticate('local', (err: string, user: User, info: string) => {
     if (err) return res.status(500).json({
       status: 'error',
@@ -72,7 +72,7 @@ export const localRouter = Router()
   })(req, res, next);
 })
 
-.post('/signup', [
+.post('/signup', unauthRoute, [
   body('email').isEmail(),
   body('password').isLength({ min: 6 }).trim().escape(),
   body('username').isLength({ min: 6 }).trim().escape()
