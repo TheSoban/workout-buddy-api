@@ -22,7 +22,7 @@ export const bodyMeasurementRouter = Router()
     status: 'success',
     response: {
       message: 'body-measurements-found',
-      data: measurements
+      measurements
     }
   });
 })
@@ -56,7 +56,7 @@ export const bodyMeasurementRouter = Router()
       status: 'success',
       response: {
         message: 'body-measurement-created',
-        data: newBodyMeasurement
+        measurement: newBodyMeasurement
       }
     });
 
