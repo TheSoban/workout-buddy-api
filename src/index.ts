@@ -9,8 +9,8 @@ import { sequelize } from './database'
 import { serialize, deserialize } from './auth/serialization'
 import { githubStrategy, googleStrategy, facebookStrategy, localStrategy } from './auth/strategies'
 
-import { githubRouter, googleRouter, facebookRouter, localRouter, otherRouter as otherAuthRouter } from './routes/auth'
-import { bodyMeasurementRouter, profileRouter, otherRouter as otherUserRouter } from './routes/user';
+import { githubRouter, googleRouter, facebookRouter, localRouter, mainRouter as mainAuthRouter } from './routes/auth'
+import { bodyMeasurementRouter, profileRouter, mainRouter as mainUserRouter } from './routes/user';
 import { loadDBTest } from './loadDBTest'
 
 dotenv.config();
@@ -84,10 +84,10 @@ dotenv.config();
   app.use('/auth/google', googleRouter);
   app.use('/auth/facebook', facebookRouter);
   app.use('/auth/local', localRouter);
-  app.use('/auth', otherAuthRouter);
+  app.use('/auth', mainAuthRouter);
   app.use('/user/body-measurement', bodyMeasurementRouter);
   app.use('/user/profile', profileRouter);
-  app.use('/user', otherUserRouter);
+  app.use('/user', mainUserRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => res.status(200).json({
     status: 'success',
