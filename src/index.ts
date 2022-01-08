@@ -10,7 +10,7 @@ import { serialize, deserialize } from './auth/serialization'
 import { githubStrategy, googleStrategy, facebookStrategy, localStrategy } from './auth/strategies'
 
 import { githubRouter, googleRouter, facebookRouter, localRouter, otherRouter as otherAuthRouter } from './routes/auth'
-import { bodyMeasurementRouter } from './routes/user';
+import { bodyMeasurementRouter, profileRouter, otherRouter as otherUserRouter } from './routes/user';
 
 dotenv.config();
 
@@ -82,6 +82,8 @@ dotenv.config();
   app.use('/auth/local', localRouter);
   app.use('/auth', otherAuthRouter);
   app.use('/user/body-measurement', bodyMeasurementRouter);
+  app.use('/user/profile', profileRouter);
+  app.use('/user', otherUserRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => res.status(200).json({
     status: 'success',
