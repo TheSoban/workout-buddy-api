@@ -1,6 +1,6 @@
 import express from 'express'
 
-const authRoute = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const userAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (req.user) return next();
   return res.status(400).json({
     status: 'error',
@@ -10,4 +10,4 @@ const authRoute = (req: express.Request, res: express.Response, next: express.Ne
   });
 }
 
-export default authRoute;
+export default userAuthenticated;
