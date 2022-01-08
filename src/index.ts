@@ -11,12 +11,16 @@ import { githubStrategy, googleStrategy, facebookStrategy, localStrategy } from 
 
 import { githubRouter, googleRouter, facebookRouter, localRouter, otherRouter as otherAuthRouter } from './routes/auth'
 import { bodyMeasurementRouter, profileRouter, otherRouter as otherUserRouter } from './routes/user';
+import { loadDBTest } from './loadDBTest'
 
 dotenv.config();
 
 (async () => {
 
   await sequelize.sync({ force: true });
+
+  // JUST FOR TESTING
+  await loadDBTest();
 
   const app = express();
 
