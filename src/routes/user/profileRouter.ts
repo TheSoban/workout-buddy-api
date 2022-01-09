@@ -7,20 +7,32 @@ import { APIUser } from '../../auth/interfaces'
 export const profileRouter = Router()
 
 .get("/", userAuthenticated, userNotDisabled, userCompleted, async (req: express.Request, res: express.Response) => {
+  try {
+    
+    const { user_id } = req.user as APIUser;
+
+    const profile = await User.findByPk(user_id, {
+      attributes: ['height', 'sex', 'date_of_birth']
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      response: {
+        message: 'profile-found',
+        profile
+      }
+    });
   
-  const { user_id } = req.user as APIUser;
+  } catch {
 
-  const profile = await User.findByPk(user_id, {
-    attributes: ['height', 'sex', 'date_of_birth']
-  });
+    return res.status(500).json({
+      status: 'error',
+      response: {
+        message: 'server-fail'
+      }
+    });
 
-  res.status(200).json({
-    status: 'success',
-    response: {
-      message: 'profile-found',
-      profile
-    }
-  });
+  }
 })
 
 .post('/', userAuthenticated, userNotDisabled, [
@@ -50,12 +62,14 @@ export const profileRouter = Router()
     });
 
   } catch {
+
     return res.status(500).json({
       status: 'error',
       response: {
         message: 'server-fail'
       }
     });
+
   }
 })
 
@@ -83,12 +97,14 @@ export const profileRouter = Router()
     });
 
   } catch {
+
     return res.status(500).json({
       status: 'error',
       response: {
         message: 'server-fail'
       }
     });
+
   }
 })
 
@@ -117,11 +133,13 @@ export const profileRouter = Router()
     });
 
   } catch {
+
     return res.status(500).json({
       status: 'error',
       response: {
         message: 'server-fail'
       }
     });
+    
   }
 })
