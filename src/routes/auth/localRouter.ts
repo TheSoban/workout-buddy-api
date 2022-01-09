@@ -1,12 +1,9 @@
 import passport from 'passport'
-import dotenv from 'dotenv'
 import express, { Router } from 'express'
 import { body } from 'express-validator'
 import { User, LocalUser } from '../../database/models'
 import { userNotAuthenticated, validParameters } from '../../middleware'
 import { generateSalt, hashPassword } from '../../auth/hashing'
-
-dotenv.config();
 
 export const localRouter = Router()
 

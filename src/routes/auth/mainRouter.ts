@@ -1,8 +1,5 @@
-import dotenv from 'dotenv'
 import express, { Router } from 'express'
 import { userAuthenticated } from '../../middleware'
-
-dotenv.config();
 
 export const mainRouter = Router()
 
