@@ -11,7 +11,7 @@ import { githubStrategy, googleStrategy, facebookStrategy, localStrategy } from 
 
 import { githubRouter, googleRouter, facebookRouter, localRouter, mainRouter as mainAuthRouter } from './routes/auth'
 import { bodyMeasurementRouter, profileRouter, mainRouter as mainUserRouter } from './routes/user';
-import { mainRouter as mainExerciseRouter } from './routes/exercise'
+import { commentRouter, mainRouter as mainExerciseRouter } from './routes/exercise'
 import { loadDBTest } from './loadDBTest'
 
 dotenv.config();
@@ -89,6 +89,7 @@ dotenv.config();
   app.use('/user/body-measurement', bodyMeasurementRouter);
   app.use('/user/profile', profileRouter);
   app.use('/user', mainUserRouter);
+  app.use('/exercise', commentRouter);
   app.use('/exercise', mainExerciseRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => res.status(200).json({

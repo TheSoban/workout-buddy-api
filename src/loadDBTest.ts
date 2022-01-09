@@ -1,4 +1,4 @@
-import { User, LocalUser } from './database/models'
+import { User, LocalUser, Exercise } from './database/models'
 import { generateSalt, hashPassword } from './auth/hashing'
 
 export const loadDBTest = async () => {
@@ -70,5 +70,21 @@ export const loadDBTest = async () => {
       salt,
       user_id: newUser.user_id,
     });
+  }
+  {
+    const newExercise = await Exercise.create({
+      name: 'przysiady',
+      description: 'siadanie i wstawanie',
+      version: 1,
+      author_id: 1
+    })
+  }
+  {
+    const newExercise = await Exercise.create({
+      name: 'inne cwiczenia',
+      description: 'wszystko i nic',
+      version: 1,
+      author_id: 2
+    })
   }
 }
