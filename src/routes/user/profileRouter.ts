@@ -1,11 +1,8 @@
-import dotenv from 'dotenv'
 import express, { Router } from 'express'
 import { body } from 'express-validator'
 import { userAuthenticated, validParameters, userCompleted, userNotDisabled } from '../../middleware'
 import { User } from '../../database/models'
 import { APIUser } from '../../auth/interfaces'
-
-dotenv.config();
 
 export const profileRouter = Router()
 
