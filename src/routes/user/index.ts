@@ -1,5 +1,5 @@
 import { bodyMeasurementRouter } from './bodyMeasurementRouter'
 import { profileRouter } from './profileRouter'
-import { otherRouter } from './otherRouter'
+import { mainRouter } from './mainRouter'
 
-export { bodyMeasurementRouter, profileRouter, otherRouter }
+export { bodyMeasurementRouter, profileRouter, mainRouter }

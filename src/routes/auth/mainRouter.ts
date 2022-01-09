@@ -4,7 +4,7 @@ import { userAuthenticated } from '../../middleware'
 
 dotenv.config();
 
-export const otherRouter = Router()
+export const mainRouter = Router()
 
 .get("/logout", userAuthenticated, (req: express.Request, res: express.Response) => {
   req.logout();
