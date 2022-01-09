@@ -1,29 +1,39 @@
-import dotenv from 'dotenv'
 import express, { Router } from 'express'
 import { body } from 'express-validator'
 import { userAuthenticated, validParameters, userCompleted, userNotDisabled } from '../../middleware'
 import { User } from '../../database/models'
 import { APIUser } from '../../auth/interfaces'
 
-dotenv.config();
-
 export const profileRouter = Router()
 
 .get("/", userAuthenticated, userNotDisabled, userCompleted, async (req: express.Request, res: express.Response) => {
+  try {
+    
+    const { user_id } = req.user as APIUser;
+
+    const profile = await User.findByPk(user_id, {
+      attributes: ['height', 'sex', 'date_of_birth']
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      response: {
+        message: 'profile-found',
+        profile
+      }
+    });
   
-  const { user_id } = req.user as APIUser;
+  } catch {
 
-  const { height, sex, date_of_birth } = await User.findByPk(user_id);
+    return res.status(500).json({
+      status: 'error',
+      response: {
+        message: 'server-fail'
+      }
+    });
 
-  res.status(200).json({
-    status: 'success',
-    response: {
-      message: 'user-profile-found',
-      profile: { height, sex, date_of_birth }
-    }
-  });
+  }
 })
-
 
 .post('/', userAuthenticated, userNotDisabled, [
   body('height').isInt(),
@@ -33,31 +43,103 @@ export const profileRouter = Router()
   try {
 
     const { user_id } = req.user as APIUser;
-    
-    const { height, sex, date_of_birth } = req.body;
 
-    const updatedUser = await User.update({
-      height,
-      sex,
-      date_of_birth,
+    const profile = await User.findByPk(user_id, {
+      attributes: ['user_id', 'height', 'sex', 'date_of_birth']
+    });
+
+    await profile.update({
+      ...req.body,
       completed: true
-    }, {
-      where: { user_id }
     });
 
     return res.status(200).json({
       status: 'success',
       response: {
-        message: 'user-profile-created'
+        message: 'profile-completed',
+        profile
       }
     });
 
-  } catch (error) {
+  } catch {
+
     return res.status(500).json({
       status: 'error',
       response: {
         message: 'server-fail'
       }
     });
+
   }
-});
+})
+
+.post('/update', userAuthenticated, userNotDisabled, userCompleted, [
+  body('height').optional().isInt(),
+  body('sex').optional().trim().isIn(["M", "F", "O"]),
+  body('date_of_birth').optional().isDate().escape()
+], validParameters, async (req: express.Request, res: express.Response, next: any) => {
+  try {
+
+    const { user_id } = req.user as APIUser;
+
+    const profile = await User.findByPk(user_id, {
+      attributes: ['user_id', 'height', 'sex', 'date_of_birth']
+    });
+
+    await profile.update(req.body);
+
+    return res.status(200).json({
+      status: 'success',
+      response: {
+        message: 'profile-updated',
+        profile
+      }
+    });
+
+  } catch {
+
+    return res.status(500).json({
+      status: 'error',
+      response: {
+        message: 'server-fail'
+      }
+    });
+
+  }
+})
+
+.post('/delete', userAuthenticated, userNotDisabled, userCompleted, async (req: express.Request, res: express.Response, next: any) => {
+  try {
+
+    const { user_id } = req.user as APIUser;
+
+    const profile = await User.findByPk(user_id, {
+      attributes: ['user_id', 'height', 'sex', 'date_of_birth']
+    });
+
+    await profile.update({
+      height: null,
+      sex: null,
+      date_of_birth: null,
+      completed: false
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      response: {
+        message: 'profile-deleted',
+        profile
+      }
+    });
+
+  } catch {
+
+    return res.status(500).json({
+      status: 'error',
+      response: {
+        message: 'server-fail'
+      }
+    });
+    
+  }
+})
