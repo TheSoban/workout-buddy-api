@@ -39,37 +39,49 @@ export const bodyMeasurementRouter = Router()
 })
 
 .get("/:measurement_id", userAuthenticated, userNotDisabled, userCompleted, async (req: express.Request, res: express.Response) => {
-  
-  const { measurement_id } = req.params;
+  try {
+
+    const { measurement_id } = req.params;
     
-  const { user_id } = req.user as APIUser;
+    const { user_id } = req.user as APIUser;
 
-  const measurement = await BodyMeasurement.findOne({
-    where: {
-      measurement_id,
-      user_id
-    },
-    attributes: ['measurement_id', 'weight', 'water_percentage', 'body_fat', 'visceral_fat',
-      'muscle', 'bone_mass', 'createdAt'
-    ]
-  });
+    const measurement = await BodyMeasurement.findOne({
+      where: {
+        measurement_id,
+        user_id
+      },
+      attributes: ['measurement_id', 'weight', 'water_percentage', 'body_fat', 'visceral_fat',
+        'muscle', 'bone_mass', 'createdAt'
+      ]
+    });
 
-  if (!measurement) {
-    return res.status(400).json({
-      status: 'error',
+    if (!measurement) {
+      return res.status(400).json({
+        status: 'error',
+        response: {
+          message: 'invalid-measurement-id'
+        }
+      });
+    }
+
+    return res.status(200).json({
+      status: 'success',
       response: {
-        message: 'invalid-measurement-id'
+        message: 'body-measurement-found',
+        measurement
       }
     });
-  }
 
-  return res.status(200).json({
-    status: 'success',
-    response: {
-      message: 'body-measurement-found',
-      measurement
-    }
-  });
+  } catch {
+
+    return res.status(500).json({
+      status: 'error',
+      response: {
+        message: 'server-fail'
+      }
+    });
+
+  }
 })
 
 .post('/', userAuthenticated, userNotDisabled, userCompleted, [
