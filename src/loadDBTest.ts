@@ -1,13 +1,13 @@
-import { User, LocalUser, Exercise } from './database/models'
+import { User, LocalUser, Exercise, Comment, ExerciseCategory } from './database/models'
 import { generateSalt, hashPassword } from './auth/hashing'
 
 export const loadDBTest = async () => {
-  {
-    const salt = generateSalt();
+  try {
+    const adminSalt = generateSalt();
 
-    const hashedPassword = hashPassword('admin', salt);
+    const adminHashedPassword = hashPassword('admin', adminSalt);
 
-    const newUser = await User.create({
+    const newAdminUser = await User.create({
       provider: 'local',
       completed: true,
       role: 2,
@@ -16,21 +16,20 @@ export const loadDBTest = async () => {
       date_of_birth: '2000-01-01'
     });
 
-    const newLocalUser = await LocalUser.create({
+    await LocalUser.create({
       username: 'admin',
       avatar_url: null,
       email: 'admin@admin.com',
-      password: hashedPassword,
-      salt,
-      user_id: newUser.user_id,
+      password: adminHashedPassword,
+      salt: adminSalt,
+      user_id: newAdminUser.user_id,
     });
-  }
-  {
-    const salt = generateSalt();
 
-    const hashedPassword = hashPassword('mod', salt);
+    const modSalt = generateSalt();
 
-    const newUser = await User.create({
+    const modHashedPassword = hashPassword('mod', modSalt);
+
+    const newModUser = await User.create({
       provider: 'local',
       completed: true,
       role: 1,
@@ -39,21 +38,20 @@ export const loadDBTest = async () => {
       date_of_birth: '2000-01-01'
     });
 
-    const newLocalUser = await LocalUser.create({
+    await LocalUser.create({
       username: 'mod',
       avatar_url: null,
       email: 'mod@mod.com',
-      password: hashedPassword,
-      salt,
-      user_id: newUser.user_id,
+      password: modHashedPassword,
+      salt: modSalt,
+      user_id: newModUser.user_id,
     });
-  }
-  {
-    const salt = generateSalt();
 
-    const hashedPassword = hashPassword('normal', salt);
+    const normalSalt = generateSalt();
 
-    const newUser = await User.create({
+    const normalHashedPassword = hashPassword('normal', normalSalt);
+
+    const newNormalUser = await User.create({
       provider: 'local',
       completed: true,
       role: 0,
@@ -62,29 +60,57 @@ export const loadDBTest = async () => {
       date_of_birth: '2000-01-01'
     });
 
-    const newLocalUser = await LocalUser.create({
+    await LocalUser.create({
       username: 'normal',
       avatar_url: null,
       email: 'normal@normal.com',
-      password: hashedPassword,
-      salt,
-      user_id: newUser.user_id,
+      password: normalHashedPassword,
+      salt: normalSalt,
+      user_id: newNormalUser.user_id,
     });
-  }
-  {
-    const newExercise = await Exercise.create({
+    
+    const newExercise1 = await Exercise.create({
       name: 'przysiady',
       description: 'siadanie i wstawanie',
       version: 1,
       author_id: 1
-    })
-  }
-  {
-    const newExercise = await Exercise.create({
+    });
+
+    const newExercise2 = await Exercise.create({
       name: 'inne cwiczenia',
       description: 'wszystko i nic',
       version: 1,
       author_id: 2
-    })
+    });
+
+    const newComment1 = await Comment.create({
+      content: 'fajne cwiczenie',
+      author_id: 2,
+      exercise_id: 1
+    });
+
+    const newComment2 = await Comment.create({
+      content: 'nie fajne cwiczenie',
+      author_id: 3,
+      exercise_id: 2
+    });
+
+    const newComment3 = await Comment.create({
+      content: 'tez mi sie nie podoba',
+      author_id: 3,
+      exercise_id: 2
+    });
+
+    const newExerciseCategory1 = await ExerciseCategory.create({
+      name: "cwiczenia silowe",
+      author_id: 1
+    });
+
+    const newExerciseCategory2 = await ExerciseCategory.create({
+      name: "cwiczenia wytrzymalosciowe",
+      author_id: 2
+    });
+  } catch (err) {
+    console.log(err);
   }
 }

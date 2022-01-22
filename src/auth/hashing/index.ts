@@ -1,5 +1,4 @@
 import crypto from 'crypto'
-import passport from 'passport';
 
 const generateSalt = (rounds: number = 12): string => {
   return crypto.randomBytes(Math.ceil(rounds / 2)).toString('hex').slice(0, rounds);
@@ -14,7 +13,7 @@ const hashPassword = (password: string, salt: string): string => {
 }
 
 const comparePassword = (password: string, hashedPassword: string, salt: string): boolean => {
-  if (passport && hashedPassword && salt) return hashedPassword === hashPassword(password, salt);
+  if (password && hashedPassword && salt) return hashedPassword === hashPassword(password, salt);
   return false;
 }
 
