@@ -1,4 +1,4 @@
-import { User, LocalUser, Exercise, Comment, ExerciseCategory } from './database/models'
+import { User, LocalUser, Exercise, Comment, ExerciseCategory, Muscle } from './database/models'
 import { generateSalt, hashPassword } from './auth/hashing'
 
 export const loadDBTest = async () => {
@@ -108,6 +108,16 @@ export const loadDBTest = async () => {
 
     const newExerciseCategory2 = await ExerciseCategory.create({
       name: "cwiczenia wytrzymalosciowe",
+      author_id: 2
+    });
+
+    const newMuscle1 = await Muscle.create({
+      name: "barki",
+      author_id: 1
+    });
+
+    const newMuscle2 = await Muscle.create({
+      name: "bicepsy",
       author_id: 2
     });
   } catch (err) {
