@@ -13,6 +13,7 @@ import { githubRouter, googleRouter, facebookRouter, localRouter, mainRouter as 
 import { bodyMeasurementRouter, profileRouter, mainRouter as mainUserRouter } from './routes/user';
 import { commentRouter, mainRouter as mainExerciseRouter } from './routes/exercise'
 import { mainRouter as mainExerciseCategoryRouter } from './routes/exercise-category'
+import { mainRouter as mainMuscleRouter } from './routes/muscle'
 import { loadDBTest } from './loadDBTest'
 
 dotenv.config();
@@ -93,6 +94,7 @@ dotenv.config();
   app.use('/exercise', commentRouter); // /exercise/:exercise_id/comment
   app.use('/exercise', mainExerciseRouter);
   app.use('/exercise-category', mainExerciseCategoryRouter);
+  app.use('/muscle', mainMuscleRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => res.status(200).json({
     status: 'success',
