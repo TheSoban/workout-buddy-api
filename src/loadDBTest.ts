@@ -10,7 +10,7 @@ export const loadDBTest = async () => {
     const newAdminUser = await User.create({
       provider: 'local',
       completed: true,
-      role: 2,
+      role: 'admin',
       height: 180,
       sex: 'M',
       date_of_birth: '2000-01-01'
@@ -32,7 +32,7 @@ export const loadDBTest = async () => {
     const newModUser = await User.create({
       provider: 'local',
       completed: true,
-      role: 1,
+      role: 'moderator',
       height: 180,
       sex: 'M',
       date_of_birth: '2000-01-01'
@@ -54,7 +54,7 @@ export const loadDBTest = async () => {
     const newStandardUser = await User.create({
       provider: 'local',
       completed: true,
-      role: 0,
+      role: 'standard',
       height: 180,
       sex: 'M',
       date_of_birth: '2000-01-01'
@@ -75,7 +75,6 @@ export const loadDBTest = async () => {
 
     const newIncompleteUser = await User.create({
       provider: 'local',
-      role: 0,
     });
 
     await LocalUser.create({
@@ -93,7 +92,6 @@ export const loadDBTest = async () => {
 
     const newDisabledUser = await User.create({
       provider: 'local',
-      role: 0,
       disabled: true,
     });
 
@@ -110,68 +108,160 @@ export const loadDBTest = async () => {
       name: 'Przysiady',
       description: 'Siadanie i wstawanie',
       version: 1,
-      author_id: 1
+      author_id: newAdminUser.user_id
     });
 
     const newExercise2 = await Exercise.create({
       name: 'Wyciskanie sztangi na ławce prostej',
       description: 'Intensywne wyciskanie',
       version: 1,
-      author_id: 2
+      author_id: newModUser.user_id
+    });
+
+    const newExercise3 = await Exercise.create({
+      name: 'Wznosy hantli bokiem w opadzie',
+      description: 'Machanie łapkami',
+      version: 1,
+      author_id: newAdminUser.user_id
+    });
+
+    const newExercise4 = await Exercise.create({
+      name: 'Martwy ciąg klasyczny',
+      description: 'Podnoszenie z ziemi bardzo ciężkich rzeczy',
+      version: 1,
+      author_id: newAdminUser.user_id
+    });
+
+    const newExercise5 = await Exercise.create({
+      name: 'Ściąganie drążka wyciągu górnego nachwytem',
+      description: 'Niby podciąganie, ale jednak kulturyści to lubią bardziej',
+      version: 1,
+      author_id: newModUser.user_id
     });
 
     const newComment1 = await Comment.create({
-      content: 'Fajne cwiczenie',
-      author_id: 2,
-      exercise_id: 1
+      content: "Fajne cwiczenie",
+      author_id: newStandardUser.user_id,
+      exercise_id: newExercise1.exercise_id,
     });
 
     const newComment2 = await Comment.create({
       content: 'Nie fajne cwiczenie',
-      author_id: 3,
-      exercise_id: 2
+      author_id: newStandardUser.user_id,
+      exercise_id: newExercise2.exercise_id
     });
 
     const newComment3 = await Comment.create({
       content: 'Też mi sie nie podoba',
-      author_id: 3,
-      exercise_id: 2
+      author_id: newStandardUser.user_id,
+      exercise_id: newExercise2.exercise_id
+    });
+    
+    const newComment4 = await Comment.create({
+      content: 'Złamałem sobie przy tym ręke, nie polecam',
+      author_id: newStandardUser.user_id,
+      exercise_id: newExercise3.exercise_id
+    });
+    
+    const newComment5 = await Comment.create({
+      content: 'Nie polecam :c',
+      author_id: newStandardUser.user_id,
+      exercise_id: newExercise4.exercise_id
+    });
+    
+    const newComment6 = await Comment.create({
+      content: 'Podniosłem 300kg kiedyś i mi ręce oderwało',
+      author_id: newStandardUser.user_id,
+      exercise_id: newExercise4.exercise_id
     });
 
     const newExerciseCategory1 = await ExerciseCategory.create({
-      name: "Ćwiczenia siłowe",
-      author_id: 1
+      name: "Wolne ciężary",
+      author_id: newModUser.user_id
     });
 
     const newExerciseCategory2 = await ExerciseCategory.create({
-      name: "Ćwiczenia wytrzymałościowe",
-      author_id: 2
+      name: "Maszyny",
+      author_id: newModUser.user_id
     });
 
+    const newExerciseCategory3 = await ExerciseCategory.create({
+      name: "Kalistenika",
+      author_id: newModUser.user_id
+    });
+
+    const newExerciseCategory4 = await ExerciseCategory.create({
+      name: "Trójbój",
+      author_id: newModUser.user_id
+    });
+
+    const newExerciseCategory5 = await ExerciseCategory.create({
+      name: "Cardio",
+      author_id: newModUser.user_id
+    });
+
+    await newExercise1.$set('categories', [newExerciseCategory1, newExerciseCategory4]);
+    await newExercise2.$set('categories', [newExerciseCategory1, newExerciseCategory4]);
+    await newExercise3.$set('categories', [newExerciseCategory1]);
+    await newExercise4.$set('categories', [newExerciseCategory1, newExerciseCategory4]);
+    await newExercise5.$set('categories', [newExerciseCategory2]);
+
     const newMuscle1 = await Muscle.create({
-      name: "Barki",
-      author_id: 1
+      name: "Naramienny",
+      author_id: newModUser.user_id
     });
 
     const newMuscle2 = await Muscle.create({
-      name: "Bicepsy",
-      author_id: 2
+      name: "Dwógłowy ramienia",
+      author_id: newModUser.user_id
     });
+
+    const newMuscle3 = await Muscle.create({
+      name: "Piersiowy",
+      author_id: newAdminUser.user_id,
+    });
+
+    const newMuscle4 = await Muscle.create({
+      name: "Trójgłowy ramienia",
+      author_id: newAdminUser.user_id,
+    });
+
+    const newMuscle5 = await Muscle.create({
+      name: "Czworogłowy uda",
+      author_id: newModUser.user_id,
+    });
+
+    await newExercise1.$set('muscles', [newMuscle5]);
+    await newExercise2.$set("muscles", [newMuscle1, newMuscle3, newMuscle4]);
+    await newExercise3.$set('muscles', [newMuscle1]);
+    await newExercise4.$set('muscles', [newMuscle5]);
+    await newExercise5.$set('muscles', [newMuscle1, newMuscle4]);
 
     const newEquipment1 = await Equipment.create({
       name: "Sztanga",
-      author_id: 1
+      author_id: newModUser.user_id,
     });
 
     const newEquipment2 = await Equipment.create({
       name: "Hantle",
-      author_id: 2
+      author_id: newAdminUser.user_id
     });
 
     const newEquipment3 = await Equipment.create({
       name: "Ławka prosta",
-      author_id: 2
+      author_id: newAdminUser.user_id
     });
+
+    const newEquipment4 = await Equipment.create({
+      name: "Wyciąg górny",
+      author_id: newAdminUser.user_id
+    });
+
+    await newExercise1.$set('equipment', [newEquipment1]);
+    await newExercise2.$set("equipment", [newEquipment1, newEquipment3]);
+    await newExercise3.$set('equipment', [newEquipment2]);
+    await newExercise4.$set('equipment', [newEquipment1]);
+    await newExercise5.$set('equipment', [newEquipment4]);
 
   } catch (err) {
     console.log(err);
