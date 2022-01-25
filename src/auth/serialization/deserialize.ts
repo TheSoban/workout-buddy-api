@@ -20,6 +20,7 @@ const deserialize = async (userId: string, done: (err: any, id?: any) => void) =
         provider: user.provider,
         username: user.github_user.username,
         avatar_url: user.github_user.avatar_url,
+        role: user.role,
         disabled: user.disabled,
         completed: user.completed,
       }
@@ -33,6 +34,7 @@ const deserialize = async (userId: string, done: (err: any, id?: any) => void) =
         provider: user.provider,
         username: user.google_user.display_name,
         avatar_url: user.google_user.avatar_url,
+        role: user.role,
         disabled: user.disabled,
         completed: user.completed,
       }
@@ -46,6 +48,7 @@ const deserialize = async (userId: string, done: (err: any, id?: any) => void) =
         provider: user.provider,
         username: user.facebook_user.display_name,
         avatar_url: user.facebook_user.avatar_url,
+        role: user.role,
         disabled: user.disabled,
         completed: user.completed,
       }
@@ -59,6 +62,7 @@ const deserialize = async (userId: string, done: (err: any, id?: any) => void) =
         provider: user.provider,
         username: user.local_user.username,
         avatar_url: user.local_user.avatar_url,
+        role: user.role,
         disabled: user.disabled,
         completed: user.completed,
       }
