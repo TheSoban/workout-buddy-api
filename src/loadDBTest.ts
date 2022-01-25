@@ -1,4 +1,4 @@
-import { User, LocalUser, Exercise, Comment, ExerciseCategory, Muscle } from './database/models'
+import { User, LocalUser, Exercise, Comment, ExerciseCategory, Muscle, Equipment } from './database/models'
 import { generateSalt, hashPassword } from './auth/hashing'
 
 export const loadDBTest = async () => {
@@ -47,11 +47,11 @@ export const loadDBTest = async () => {
       user_id: newModUser.user_id,
     });
 
-    const normalSalt = generateSalt();
+    const standardSalt = generateSalt();
 
-    const normalHashedPassword = hashPassword('normal', normalSalt);
+    const standardHashedPassword = hashPassword('standard', standardSalt);
 
-    const newNormalUser = await User.create({
+    const newStandardUser = await User.create({
       provider: 'local',
       completed: true,
       role: 0,
@@ -61,65 +61,118 @@ export const loadDBTest = async () => {
     });
 
     await LocalUser.create({
-      username: 'normal',
+      username: 'standard',
       avatar_url: null,
-      email: 'normal@normal.com',
-      password: normalHashedPassword,
-      salt: normalSalt,
-      user_id: newNormalUser.user_id,
+      email: 'standard@standard.com',
+      password: standardHashedPassword,
+      salt: standardSalt,
+      user_id: newStandardUser.user_id,
+    });
+
+    const incompleteSalt = generateSalt();
+
+    const incompleteHashedPassword = hashPassword('incomplete', incompleteSalt);
+
+    const newIncompleteUser = await User.create({
+      provider: 'local',
+      role: 0,
+    });
+
+    await LocalUser.create({
+      username: 'incomplete',
+      avatar_url: null,
+      email: 'incomplete@incomplete.com',
+      password: incompleteHashedPassword,
+      salt: incompleteSalt,
+      user_id: newIncompleteUser.user_id,
+    });
+
+    const disabledSalt = generateSalt();
+
+    const disabledHashedPassword = hashPassword('disabled', disabledSalt);
+
+    const newDisabledUser = await User.create({
+      provider: 'local',
+      role: 0,
+      disabled: true,
+    });
+
+    await LocalUser.create({
+      username: 'disabled',
+      avatar_url: null,
+      email: 'disabled@disabled.com',
+      password: disabledHashedPassword,
+      salt: disabledSalt,
+      user_id: newDisabledUser.user_id,
     });
     
     const newExercise1 = await Exercise.create({
-      name: 'przysiady',
-      description: 'siadanie i wstawanie',
+      name: 'Przysiady',
+      description: 'Siadanie i wstawanie',
       version: 1,
       author_id: 1
     });
 
     const newExercise2 = await Exercise.create({
-      name: 'inne cwiczenia',
-      description: 'wszystko i nic',
+      name: 'Wyciskanie sztangi na ławce prostej',
+      description: 'Intensywne wyciskanie',
       version: 1,
       author_id: 2
     });
 
     const newComment1 = await Comment.create({
-      content: 'fajne cwiczenie',
+      content: 'Fajne cwiczenie',
       author_id: 2,
       exercise_id: 1
     });
 
     const newComment2 = await Comment.create({
-      content: 'nie fajne cwiczenie',
+      content: 'Nie fajne cwiczenie',
       author_id: 3,
       exercise_id: 2
     });
 
     const newComment3 = await Comment.create({
-      content: 'tez mi sie nie podoba',
+      content: 'Też mi sie nie podoba',
       author_id: 3,
       exercise_id: 2
     });
 
     const newExerciseCategory1 = await ExerciseCategory.create({
-      name: "cwiczenia silowe",
+      name: "Ćwiczenia siłowe",
       author_id: 1
     });
 
     const newExerciseCategory2 = await ExerciseCategory.create({
-      name: "cwiczenia wytrzymalosciowe",
+      name: "Ćwiczenia wytrzymałościowe",
       author_id: 2
     });
 
     const newMuscle1 = await Muscle.create({
-      name: "barki",
+      name: "Barki",
       author_id: 1
     });
 
     const newMuscle2 = await Muscle.create({
-      name: "bicepsy",
+      name: "Bicepsy",
       author_id: 2
     });
+
+    const newEquipment1 = await Equipment.create({
+      name: "Sztanga",
+      author_id: 1
+    });
+
+    const newEquipment2 = await Equipment.create({
+      name: "Hantle",
+      author_id: 2
+    });
+
+    const newEquipment3 = await Equipment.create({
+      name: "Ławka prosta",
+      author_id: 2
+    });
+
   } catch (err) {
     console.log(err);
   }
