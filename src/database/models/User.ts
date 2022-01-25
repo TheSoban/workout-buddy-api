@@ -1,4 +1,4 @@
-import { Model, Table, Column, AutoIncrement, PrimaryKey, IsIn, AllowNull, DataType, Default, HasOne, HasMany } from "sequelize-typescript"
+import { Model, Table, Column, AutoIncrement, PrimaryKey, IsIn, AllowNull, DataType, Default, HasOne, HasMany } from 'sequelize-typescript'
 
 import { 
   GithubUser, GoogleUser, FacebookUser, LocalUser, 
@@ -14,7 +14,7 @@ class User extends Model {
   user_id: number;
 
   @AllowNull(false)
-  @IsIn([["local", "github", "facebook", "google"]])
+  @IsIn([['local', 'github', 'facebook', 'google']])
   @Column(DataType.STRING(8))
   provider: string;
 
@@ -29,16 +29,17 @@ class User extends Model {
   completed: boolean;
 
   @AllowNull(false)
-  @Default(0)
-  @Column(DataType.INTEGER)
-  role: number;
+  @IsIn([['standard', 'moderator', 'admin']])
+  @Default('standard')
+  @Column(DataType.STRING(10))
+  role: string;
 
   @AllowNull(true)
   @Column(DataType.INTEGER)
   height: number;
 
   @AllowNull(true)
-  @IsIn([["M", "F", "O"]])
+  @IsIn([['M', 'F', 'O']])
   @Column(DataType.STRING(1))
   sex: string;
 

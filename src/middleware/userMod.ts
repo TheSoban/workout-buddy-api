@@ -7,7 +7,7 @@ const userMod = async (req: express.Request, res: express.Response, next: expres
 
   const user = await User.findByPk(user_id);
 
-  if (user.role >= 1) return next();
+  if (user.role === 'moderator' || user.role === 'admin') return next();
   return res.status(400).json({
     status: 'error',
     response: {
