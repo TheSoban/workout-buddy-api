@@ -3,7 +3,7 @@ import { Model, Table, Column, AutoIncrement, PrimaryKey, IsIn, AllowNull, DataT
 import { 
   GithubUser, GoogleUser, FacebookUser, LocalUser, 
   BodyMeasurement, Comment, WorkoutBlueprint, WorkoutLog,
-  Exercise, ExerciseCategory, Muscle
+  Exercise, ExerciseCategory, Muscle, Equipment
 } from './'
 
 @Table
@@ -78,6 +78,9 @@ class User extends Model {
 
   @HasMany(() => Muscle)
   created_muscles: Muscle[];
+
+  @HasMany(() => Equipment)
+  created_equipment: Equipment[];
 }
 
 export default User;
