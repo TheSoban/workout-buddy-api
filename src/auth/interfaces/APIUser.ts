@@ -3,6 +3,7 @@ interface APIUser {
   provider: string,
   username: string,
   avatar_url: string,
+  role: string,
   disabled: boolean,
   completed: boolean,
 }
