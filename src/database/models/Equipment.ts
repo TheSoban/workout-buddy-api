@@ -1,6 +1,6 @@
-import { Model, Table, Column, AutoIncrement, PrimaryKey, AllowNull, DataType, BelongsToMany } from "sequelize-typescript"
+import { Model, Table, Column, AutoIncrement, PrimaryKey, AllowNull, DataType, BelongsToMany, ForeignKey, BelongsTo } from "sequelize-typescript"
 
-import { Exercise, ExerciseAndEquipment } from './'
+import { Exercise, ExerciseAndEquipment, User } from './'
 
 @Table
 class Equipment extends Model {
@@ -15,6 +15,14 @@ class Equipment extends Model {
 
   @BelongsToMany(() => Exercise, () => ExerciseAndEquipment)
   exercises: Exercise[];
+
+  @ForeignKey(() => User)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  author_id: number;
+
+  @BelongsTo(() => User, 'author_id')
+  author: User;
 }
 
 export default Equipment;
