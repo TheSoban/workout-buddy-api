@@ -13,9 +13,6 @@ export const bodyMeasurementRouter = Router()
 
     const measurements = await BodyMeasurement.findAll({
       where: { user_id },
-      attributes: ['measurement_id', 'weight', 'water_percentage', 'body_fat', 'visceral_fat',
-        'muscle', 'bone_mass', 'createdAt'
-      ]
     });
 
     return res.status(200).json({
@@ -46,13 +43,10 @@ export const bodyMeasurementRouter = Router()
     const { user_id } = req.user as APIUser;
 
     const measurement = await BodyMeasurement.findOne({
-      where: {
+      where: { 
         measurement_id,
         user_id
-      },
-      attributes: ['measurement_id', 'weight', 'water_percentage', 'body_fat', 'visceral_fat',
-        'muscle', 'bone_mass', 'createdAt'
-      ]
+      }
     });
 
     if (!measurement) {
@@ -112,14 +106,7 @@ export const bodyMeasurementRouter = Router()
       status: 'success',
       response: {
         message: 'body-measurement-created',
-        measurement: {
-          weight: newMeasurement.weight, 
-          water_percentage: newMeasurement.water_percentage, 
-          body_fat: newMeasurement.body_fat, 
-          visceral_fat: newMeasurement.visceral_fat,
-          muscle: newMeasurement.muscle, 
-          bone_mass: newMeasurement.bone_mass
-        }
+        measurement: newMeasurement
       }
     });
 
@@ -153,10 +140,7 @@ export const bodyMeasurementRouter = Router()
       where: {
         measurement_id,
         user_id
-      },
-      attributes: ['measurement_id', 'weight', 'water_percentage', 'body_fat', 'visceral_fat',
-        'muscle', 'bone_mass'
-      ]
+      }
     });
 
     if (!oldMeasurement) {
@@ -208,10 +192,7 @@ export const bodyMeasurementRouter = Router()
       where: {
         measurement_id,
         user_id
-      },
-      attributes: ['measurement_id', 'weight', 'water_percentage', 'body_fat', 'visceral_fat',
-        'muscle', 'bone_mass'
-      ]
+      }
     });
 
     if (!oldMeasurement) {
