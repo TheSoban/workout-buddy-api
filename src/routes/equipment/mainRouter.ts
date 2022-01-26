@@ -9,9 +9,7 @@ export const mainRouter = Router()
 .get("/", userAuthenticated, userNotDisabled, userCompleted, async (req: express.Request, res: express.Response) => {
   try {
 
-    const equipment = await Equipment.findAll({
-      attributes: ['equipment_id', 'name']
-    });
+    const equipment = await Equipment.findAll({});
     
     return res.status(200).json({
       status: 'success',
@@ -37,9 +35,7 @@ export const mainRouter = Router()
 
     const { equipment_id } = req.params;
   
-    const equipment = await Equipment.findByPk(equipment_id, {
-      attributes: ['equipment_id', 'name']
-    });
+    const equipment = await Equipment.findByPk(equipment_id);
     
     if (!equipment) {
       return res.status(400).json({
@@ -78,7 +74,7 @@ export const mainRouter = Router()
     
     const { name } = req.body;
 
-    const newCategory = await Equipment.create({
+    const newEquipment = await Equipment.create({
       name,
       author_id: user_id
     });
@@ -86,10 +82,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
-        equipment: {
-          equipment_id: newCategory.equipment_id,
-          name: newCategory.name,
-        }
+        equipment: newEquipment
       }
     });
 
@@ -112,9 +105,7 @@ export const mainRouter = Router()
 
     const { equipment_id } = req.params;
 
-    const oldEquipment = await Equipment.findByPk(equipment_id, {
-      attributes: ['equipment_id', 'name']
-    });
+    const oldEquipment = await Equipment.findByPk(equipment_id);
 
     if (!oldEquipment) {
       return res.status(400).json({
@@ -152,9 +143,7 @@ export const mainRouter = Router()
 
     const { equipment_id } = req.params;
 
-    const oldEquipment = await Equipment.findByPk(equipment_id, {
-      attributes: ['equipment_id', 'name']
-    });
+    const oldEquipment = await Equipment.findByPk(equipment_id);
 
     if (!oldEquipment) {
       return res.status(400).json({

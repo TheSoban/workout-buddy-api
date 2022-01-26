@@ -13,7 +13,6 @@ export const commentRouter = Router()
     
     const comments = await Comment.findAll({
       where: { exercise_id },
-      attributes: ['comment_id', 'content'],
       include: [
         {
           model: User,
@@ -45,10 +44,10 @@ export const commentRouter = Router()
       response: {
         message: 'comments-found',
         comments: comments.map(comment => {
-          if (comment.author.provider == 'github') return { comment_id: comment.comment_id, content: comment.content, author: comment.author.github_user.username }
-          if (comment.author.provider == 'google') return { comment_id: comment.comment_id, content: comment.content, author: comment.author.google_user.display_name }
-          if (comment.author.provider == 'facebook') return { comment_id: comment.comment_id, content: comment.content, author: comment.author.facebook_user.display_name }
-          if (comment.author.provider == 'local') return { comment_id: comment.comment_id, content: comment.content, author: comment.author.local_user.username }
+          if (comment.author.provider == 'github') return { comment_id: comment.comment_id, content: comment.content, author: comment.author.github_user.username, createdAt: comment.createdAt, updatedAt: comment.updatedAt }
+          if (comment.author.provider == 'google') return { comment_id: comment.comment_id, content: comment.content, author: comment.author.google_user.display_name, createdAt: comment.createdAt, updatedAt: comment.updatedAt }
+          if (comment.author.provider == 'facebook') return { comment_id: comment.comment_id, content: comment.content, author: comment.author.facebook_user.display_name, createdAt: comment.createdAt, updatedAt: comment.updatedAt }
+          if (comment.author.provider == 'local') return { comment_id: comment.comment_id, content: comment.content, author: comment.author.local_user.username, createdAt: comment.createdAt, updatedAt: comment.updatedAt }
         })
       }
     });
@@ -97,9 +96,7 @@ export const commentRouter = Router()
       status: 'success',
       response: {
         message: 'comment-created',
-        comment: {
-          content: newComment.content
-        }
+        comment: newComment
       }
     });
 
@@ -138,8 +135,7 @@ export const commentRouter = Router()
     }
 
     const oldComment = await Comment.findOne({ 
-      where: { comment_id, exercise_id, author_id: user_id },
-      attributes: ['comment_id', 'content']
+      where: { comment_id, exercise_id, author_id: user_id }
     })
 
     if (!oldComment) {
@@ -194,8 +190,7 @@ export const commentRouter = Router()
     }
 
     const oldComment = await Comment.findOne({ 
-      where: { comment_id, exercise_id, author_id: user_id },
-      attributes: ['comment_id', 'content']
+      where: { comment_id, exercise_id, author_id: user_id }
     })
 
     if (!oldComment) {

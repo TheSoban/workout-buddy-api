@@ -9,9 +9,7 @@ export const mainRouter = Router()
 .get("/", userAuthenticated, userNotDisabled, userCompleted, async (req: express.Request, res: express.Response) => {
   try {
 
-    const categories = await ExerciseCategory.findAll({
-      attributes: ['category_id', 'name']
-    });
+    const categories = await ExerciseCategory.findAll({});
     
     return res.status(200).json({
       status: 'success',
@@ -37,9 +35,7 @@ export const mainRouter = Router()
 
     const { category_id } = req.params;
   
-    const category = await ExerciseCategory.findByPk(category_id, {
-      attributes: ['category_id', 'name']
-    });
+    const category = await ExerciseCategory.findByPk(category_id);
     
     if (!category) {
       return res.status(400).json({
@@ -86,10 +82,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
-        category: {
-          category_id: newCategory.category_id,
-          name: newCategory.name,
-        }
+        category: newCategory
       }
     });
 
@@ -112,9 +105,7 @@ export const mainRouter = Router()
 
     const { category_id } = req.params;
 
-    const oldCategory = await ExerciseCategory.findByPk(category_id, {
-      attributes: ['category_id', 'name']
-    });
+    const oldCategory = await ExerciseCategory.findByPk(category_id);
 
     if (!oldCategory) {
       return res.status(400).json({

@@ -9,9 +9,7 @@ export const mainRouter = Router()
 .get("/", userAuthenticated, userNotDisabled, userCompleted, async (req: express.Request, res: express.Response) => {
   try {
 
-    const muscles = await Muscle.findAll({
-      attributes: ['muscle_id', 'name']
-    });
+    const muscles = await Muscle.findAll({});
     
     return res.status(200).json({
       status: 'success',
@@ -37,9 +35,7 @@ export const mainRouter = Router()
 
     const { muscle_id } = req.params;
   
-    const muscle = await Muscle.findByPk(muscle_id, {
-      attributes: ['muscle_id', 'name']
-    });
+    const muscle = await Muscle.findByPk(muscle_id);
     
     if (!muscle) {
       return res.status(400).json({
@@ -78,7 +74,7 @@ export const mainRouter = Router()
     
     const { name } = req.body;
 
-    const newCategory = await Muscle.create({
+    const newMuscle = await Muscle.create({
       name,
       author_id: user_id
     });
@@ -86,10 +82,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
-        muscle: {
-          muscle_id: newCategory.muscle_id,
-          name: newCategory.name,
-        }
+        muscle: newMuscle
       }
     });
 
@@ -112,9 +105,7 @@ export const mainRouter = Router()
 
     const { muscle_id } = req.params;
 
-    const oldMuscle = await Muscle.findByPk(muscle_id, {
-      attributes: ['muscle_id', 'name']
-    });
+    const oldMuscle = await Muscle.findByPk(muscle_id);
 
     if (!oldMuscle) {
       return res.status(400).json({
@@ -152,9 +143,7 @@ export const mainRouter = Router()
 
     const { muscle_id } = req.params;
 
-    const oldMuscle = await Muscle.findByPk(muscle_id, {
-      attributes: ['muscle_id', 'name']
-    });
+    const oldMuscle = await Muscle.findByPk(muscle_id);
 
     if (!oldMuscle) {
       return res.status(400).json({

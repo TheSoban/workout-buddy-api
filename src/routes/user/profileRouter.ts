@@ -38,8 +38,8 @@ export const profileRouter = Router()
 .post('/', userAuthenticated, userNotDisabled, [
   body('height').isInt(),
   body('sex').trim().isIn(["M", "F", "O"]),
-  body('date_of_birth').isDate().escape()
-], validParameters, async (req: express.Request, res: express.Response, next: any) => {
+  body('date_of_birth').isDate()
+], validParameters, async (req: express.Request, res: express.Response) => {
   try {
 
     const { user_id } = req.user as APIUser;
@@ -83,7 +83,7 @@ export const profileRouter = Router()
     const { user_id } = req.user as APIUser;
 
     const profile = await User.findByPk(user_id, {
-      attributes: ['user_id', 'height', 'sex', 'date_of_birth']
+      attributes: ['user_id', 'height', 'sex', 'date_of_birth', 'createdAt', 'updatedAt']
     });
 
     await profile.update(req.body);
@@ -114,7 +114,7 @@ export const profileRouter = Router()
     const { user_id } = req.user as APIUser;
 
     const profile = await User.findByPk(user_id, {
-      attributes: ['user_id', 'height', 'sex', 'date_of_birth']
+      attributes: ['user_id', 'height', 'sex', 'date_of_birth', 'createdAt', 'updatedAt']
     });
 
     await profile.update({
