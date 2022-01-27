@@ -1,3 +1,5 @@
+import { sequelize } from '../../database'
+import { QueryTypes } from 'sequelize' 
 import express, { Router } from 'express'
 import { body } from 'express-validator'
 import { userAuthenticated, validParameters, userCompleted, userNotDisabled } from '../../middleware'
@@ -58,11 +60,17 @@ export const bodyMeasurementRouter = Router()
       });
     }
 
+    const BMI_result: ({ BMI: string })[] = await sequelize.query('SELECT CALL_GET_BMI(:measurement_id) as BMI', {
+      replacements: { measurement_id },
+      type: QueryTypes.SELECT
+    });
+
     return res.status(200).json({
       status: 'success',
       response: {
         message: 'body-measurement-found',
-        measurement
+        measurement,
+        BMI: BMI_result[0].BMI
       }
     });
 
