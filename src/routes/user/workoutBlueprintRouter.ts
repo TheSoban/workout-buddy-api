@@ -90,7 +90,7 @@ export const workoutBlueprintRouter = Router()
     });
 
   } catch {
-    
+
     return res.status(500).json({
       status: 'error',
       response: {
@@ -101,7 +101,7 @@ export const workoutBlueprintRouter = Router()
   }
 })
 
-.post("/", userAuthenticated, userNotDisabled, userCompleted, userMod, [
+.post("/", userAuthenticated, userNotDisabled, userCompleted, [
   body('name').isLength({ max: 50 }).trim().escape(),
   body('description').isLength({ max: 300 }).trim().escape(),
   body('color').isLength({ max: 20 }).trim().escape(),
