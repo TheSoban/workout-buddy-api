@@ -1,4 +1,4 @@
-import { User, LocalUser, Exercise, Comment, ExerciseCategory, Muscle, Equipment } from './database/models'
+import { User, LocalUser, Exercise, Comment, ExerciseCategory, Muscle, Equipment, BodyMeasurement, WorkoutBlueprint, OrderedExercise } from './database/models'
 import { generateSalt, hashPassword } from './auth/hashing'
 
 export const loadDBTest = async () => {
@@ -263,6 +263,50 @@ export const loadDBTest = async () => {
     await newExercise4.$set('equipment', [newEquipment1]);
     await newExercise5.$set('equipment', [newEquipment4]);
 
+    const newBodyMeasurements1 = await BodyMeasurement.create({
+      weight: 78.2,
+      water_percentage: 50,
+      body_fat: 20,
+      visceral_fat: 9,
+      muscle: 60,
+      bone_mass: 3,
+      user_id: newModUser.user_id
+    });
+
+    const newBodyMeasurements2 = await BodyMeasurement.create({
+      weight: 80.2,
+      water_percentage: 50,
+      body_fat: 20,
+      visceral_fat: 9,
+      muscle: 60,
+      bone_mass: 3,
+      user_id: newModUser.user_id
+    });
+
+    const newWorkoutBlueprint1 = await WorkoutBlueprint.create({
+      name: 'Trening typ 1',
+      description: 'Opis treningu testowego',
+      color: 'blue',
+      user_id: newModUser.user_id
+    });
+    
+    const newOrderedExercise1 = await OrderedExercise.create({
+      order: 1,
+      exercise_id: newExercise1.exercise_id,
+      blueprint_id: newWorkoutBlueprint1.blueprint_id
+    });
+    
+    const newOrderedExercise2 = await OrderedExercise.create({
+      order: 2,
+      exercise_id: newExercise2.exercise_id,
+      blueprint_id: newWorkoutBlueprint1.blueprint_id
+    });
+    
+    const newOrderedExercise3 = await OrderedExercise.create({
+      order: 3,
+      exercise_id: newExercise3.exercise_id,
+      blueprint_id: newWorkoutBlueprint1.blueprint_id
+    });
   } catch (err) {
     console.log(err);
   }
