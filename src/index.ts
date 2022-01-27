@@ -10,11 +10,12 @@ import { serialize, deserialize } from './auth/serialization'
 import { githubStrategy, googleStrategy, facebookStrategy, localStrategy } from './auth/strategies'
 
 import { githubRouter, googleRouter, facebookRouter, localRouter, mainRouter as mainAuthRouter } from './routes/auth'
-import { bodyMeasurementRouter, profileRouter, mainRouter as mainUserRouter } from './routes/user';
+import { bodyMeasurementRouter, profileRouter, workoutBlueprintRouter, workoutLogRouter, mainRouter as mainUserRouter } from './routes/user';
 import { commentRouter, mainRouter as mainExerciseRouter } from './routes/exercise'
 import { mainRouter as mainExerciseCategoryRouter } from './routes/exercise-category'
 import { mainRouter as mainMuscleRouter } from './routes/muscle'
 import { mainRouter as mainEquipmentRouter } from './routes/equipment'
+import { mainRouter as mainAdminRouter } from './routes/admin'
 import { loadDBTest } from './loadDBTest'
 
 dotenv.config();
@@ -90,6 +91,8 @@ dotenv.config();
   app.use('/auth/local', localRouter);
   app.use('/auth', mainAuthRouter);
   app.use('/user/body-measurement', bodyMeasurementRouter);
+  app.use('/user/workout-blueprint', workoutBlueprintRouter);
+  app.use('/user/workout-log', workoutLogRouter);
   app.use('/user/profile', profileRouter);
   app.use('/user', mainUserRouter);
   app.use('/exercise', commentRouter); // /exercise/:exercise_id/comment
@@ -97,6 +100,7 @@ dotenv.config();
   app.use('/exercise-category', mainExerciseCategoryRouter);
   app.use('/muscle', mainMuscleRouter);
   app.use('/equipment', mainEquipmentRouter);
+  app.use('/admin', mainAdminRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => res.status(200).json({
     status: 'success',
