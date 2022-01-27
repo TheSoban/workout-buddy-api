@@ -3,7 +3,7 @@ import { Model, Table, Column, Index, AutoIncrement, PrimaryKey, AllowNull, Data
 import { 
   Comment, ExerciseImage, Equipment, ExerciseAndEquipment, 
   Muscle, ExerciseAndMuscle, ExerciseCategory, ExerciseAndExerciseCategory,
-  ExerciseAndExcerciseGroup, User
+  OrderedExercise, User, SetLog
 } from './'
 
 @Table
@@ -18,7 +18,7 @@ class Exercise extends Model {
   @Index({ type: 'FULLTEXT' })
   name: string;
 
-  @AllowNull(true)
+  @AllowNull(false)
   @Column(DataType.STRING(300))
   description: string;
 
@@ -40,8 +40,11 @@ class Exercise extends Model {
   @HasMany(() => ExerciseImage)
   images: ExerciseImage[];
 
-  @HasMany(() => ExerciseAndExcerciseGroup)
-  exercise_and_exercise_groups: ExerciseAndExcerciseGroup[];
+  @HasMany(() => OrderedExercise)
+  ordered_exercises: OrderedExercise[];
+
+  @HasMany(() => SetLog)
+  set_logs: SetLog[];
 
   @BelongsToMany(() => Equipment, () => ExerciseAndEquipment)
   equipment: Equipment[];

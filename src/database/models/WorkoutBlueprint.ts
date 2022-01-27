@@ -1,6 +1,6 @@
 import { Model, Table, Column, AutoIncrement, PrimaryKey, AllowNull, DataType, ForeignKey, BelongsTo, HasMany } from "sequelize-typescript"
 
-import { User, ExerciseGroup } from './'
+import { User, OrderedExercise } from './'
 
 @Table
 class WorkoutBlueprint extends Model {
@@ -29,8 +29,8 @@ class WorkoutBlueprint extends Model {
   @BelongsTo(() => User, 'user_id')
   user: User;
 
-  @HasMany(() => ExerciseGroup)
-  exercise_groups: ExerciseGroup[];
+  @HasMany(() => OrderedExercise)
+  ordered_exercises: OrderedExercise[];
 }
 
 export default WorkoutBlueprint;

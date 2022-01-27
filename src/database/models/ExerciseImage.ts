@@ -10,7 +10,7 @@ class ExerciseImage extends Model {
   image_id: number;
 
   @AllowNull(false)
-  @Column(DataType.STRING(50))
+  @Column(DataType.STRING(500))
   url: string;
 
   @AllowNull(false)

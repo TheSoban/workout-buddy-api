@@ -1,6 +1,6 @@
 import { Model, Table, Column, AutoIncrement, PrimaryKey, AllowNull, DataType, ForeignKey, BelongsTo } from "sequelize-typescript"
 
-import { WorkoutLog, ExerciseAndExcerciseGroup } from './'
+import { WorkoutLog, Exercise } from './'
 
 @Table
 class SetLog extends Model {
@@ -11,7 +11,7 @@ class SetLog extends Model {
 
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  in_exercise_order: number;
+  order: number;
 
   @AllowNull(false)
   @Column(DataType.INTEGER)
@@ -33,13 +33,13 @@ class SetLog extends Model {
   @BelongsTo(() => WorkoutLog, 'log_id')
   workout_log: WorkoutLog;
 
-  @ForeignKey(() => ExerciseAndExcerciseGroup)
+  @ForeignKey(() => Exercise)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  junction_id: number;
+  exercise_id: number;
 
-  @BelongsTo(() => ExerciseAndExcerciseGroup, 'junction_id')
-  exercise_and_exercise_group: ExerciseAndExcerciseGroup;
+  @BelongsTo(() => Exercise, 'exercise_id')
+  exercise: Exercise;
 }
 
 export default SetLog;
