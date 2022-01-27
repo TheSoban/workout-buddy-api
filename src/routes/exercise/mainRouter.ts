@@ -48,7 +48,6 @@ export const mainRouter = Router()
       muscle_filter = (req.query.muscles) ? (<string>req.query.muscles).split(',') : [];
       category_filter = (req.query.categories) ? (<string>req.query.categories).split(',') : [];
 
-      console.log(name_filter, equipment_filter, muscle_filter, category_filter);
     } catch (err) {
       return res.status(400).json({
         status: 'error',
@@ -119,8 +118,7 @@ export const mainRouter = Router()
       }
     });
 
-  } catch (err) {
-    console.log(err);
+  } catch {
     return res.status(500).json({
       status: 'error',
       response: {
@@ -133,7 +131,7 @@ export const mainRouter = Router()
 
 .post("/", userAuthenticated, userNotDisabled, userCompleted, userMod, [
   body('name').isLength({ max: 50 }).trim().escape(),
-  body('description').isLength({ max: 50 }).trim().escape(),
+  body('description').isLength({ max: 300 }).trim().escape(),
   body('version').isInt(),
   body('images').custom(isArrayOfUrlsValidator),
   body('equipment').custom(isArrayOfNumbersValidator),
@@ -160,8 +158,8 @@ export const mainRouter = Router()
     })));
 
     const foundEquipment = await Equipment.findAll({ where: { equipment_id: equipment } });
-    const foundMuscles = await Equipment.findAll({ where: { muscle_id: muscles } });
-    const foundCategories = await Equipment.findAll({ where: { category_id: categories } });
+    const foundMuscles = await Muscle.findAll({ where: { muscle_id: muscles } });
+    const foundCategories = await ExerciseCategory.findAll({ where: { category_id: categories } });
 
     await newExercise.$set('images', newImages);
     await newExercise.$set('equipment', foundEquipment);
@@ -194,7 +192,7 @@ export const mainRouter = Router()
 
 .post("/:exercise_id/update", userAuthenticated, userNotDisabled, userCompleted, userMod, [
   body('name').optional().isLength({ max: 50 }).trim().escape(),
-  body('description').optional().isLength({ max: 50 }).trim().escape(),
+  body('description').optional().isLength({ max: 300 }).trim().escape(),
   body('version').optional().isInt(),
   body('images').custom(isArrayOfUrlsValidator),
   body('equipment').custom(isArrayOfNumbersValidator),
@@ -236,8 +234,8 @@ export const mainRouter = Router()
     })));
 
     const foundEquipment = await Equipment.findAll({ where: { equipment_id: equipment } });
-    const foundMuscles = await Equipment.findAll({ where: { muscle_id: muscles } });
-    const foundCategories = await Equipment.findAll({ where: { category_id: categories } });
+    const foundMuscles = await Muscle.findAll({ where: { muscle_id: muscles } });
+    const foundCategories = await ExerciseCategory.findAll({ where: { category_id: categories } });
 
     await oldExercise.$set('images', newImages);
     await oldExercise.$set('equipment', foundEquipment);

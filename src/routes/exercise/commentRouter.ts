@@ -52,8 +52,8 @@ export const commentRouter = Router()
       }
     });
 
-  } catch (err) {
-    console.log(err);
+  } catch {
+    
     return res.status(500).json({
       status: 'error',
       response: {
@@ -172,7 +172,7 @@ export const commentRouter = Router()
 .post("/:exercise_id/comment/:comment_id/delete", userAuthenticated, userNotDisabled, userCompleted, async (req: express.Request, res: express.Response) => {
   try {
 
-    const { user_id } = req.user as APIUser;
+    const { user_id, role } = req.user as APIUser;
 
     const { exercise_id, comment_id } = req.params;
 
@@ -190,8 +190,9 @@ export const commentRouter = Router()
     }
 
     const oldComment = await Comment.findOne({ 
-      where: { comment_id, exercise_id, author_id: user_id }
+      where: (role === 'admin' || role === 'moderator' ) ? { comment_id, exercise_id } : { comment_id, exercise_id, author_id: user_id }
     })
+
 
     if (!oldComment) {
       return res.status(400).json({
