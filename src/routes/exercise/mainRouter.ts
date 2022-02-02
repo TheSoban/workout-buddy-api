@@ -71,6 +71,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'exercises-found',
         exercises
       }
     });
@@ -114,6 +115,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'exercise-found',
         exercise: { comments, images, equipment, muscles, categories, exercise_id, name, description, version }
       }
     });
@@ -169,6 +171,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'exercise-created',
         exercise: {
           exercise_id: newExercise.exercise_id,
           name: newExercise.name,
@@ -194,10 +197,10 @@ export const mainRouter = Router()
   body('name').optional().isLength({ max: 50 }).trim().escape(),
   body('description').optional().isLength({ max: 300 }).trim().escape(),
   body('version').optional().isInt(),
-  body('images').custom(isArrayOfUrlsValidator),
-  body('equipment').custom(isArrayOfNumbersValidator),
-  body('muscles').custom(isArrayOfNumbersValidator),
-  body('categories').custom(isArrayOfNumbersValidator),
+  body('images').optional().custom(isArrayOfUrlsValidator),
+  body('equipment').optional().custom(isArrayOfNumbersValidator),
+  body('muscles').optional().custom(isArrayOfNumbersValidator),
+  body('categories').optional().custom(isArrayOfNumbersValidator),
 ], validParameters, async (req: express.Request, res: express.Response) => {
   try {
 

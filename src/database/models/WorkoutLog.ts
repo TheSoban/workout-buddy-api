@@ -13,13 +13,17 @@ class WorkoutLog extends Model {
   @Column(DataType.STRING(50))
   name: string;
 
+  @AllowNull(false)
+  @Column(DataType.DATE)
+  date: string;
+
   @ForeignKey(() => User)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  user_id: number;
+  author_id: number;
 
-  @BelongsTo(() => User, 'user_id')
-  user: User;
+  @BelongsTo(() => User, 'author_id')
+  author: User;
 
   @HasMany(() => SetLog)
   set_logs: SetLog[];

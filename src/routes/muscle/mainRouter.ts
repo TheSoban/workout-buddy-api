@@ -14,6 +14,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'muscles-found',
         muscles
       }
     });
@@ -49,6 +50,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'muscle-found',
         muscle
       }
     });
@@ -82,6 +84,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'muscle-created',
         muscle: newMuscle
       }
     });
@@ -99,7 +102,7 @@ export const mainRouter = Router()
 })
 
 .post("/:muscle_id/update", userAuthenticated, userNotDisabled, userCompleted, userMod, [
-  body('name').trim().isLength({ min: 1, max: 50 }).escape(),
+  body('name').optional().trim().isLength({ min: 1, max: 50 }).escape(),
 ], validParameters, async (req: express.Request, res: express.Response) => {
   try {
 

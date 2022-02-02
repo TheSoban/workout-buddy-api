@@ -12,7 +12,7 @@ export const workoutLogRouter = Router()
     const { user_id } = req.user as APIUser;
 
     const logs = await WorkoutLog.findAll({
-      where: { user_id },
+      where: { author_id: user_id },
       include: [
         { 
           model: SetLog,
@@ -28,6 +28,7 @@ export const workoutLogRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'logs-found',
         logs
       }
     });
@@ -52,7 +53,7 @@ export const workoutLogRouter = Router()
     const { log_id } = req.params;
   
     const log = await WorkoutLog.findOne({
-      where: { user_id, log_id },
+      where: { author_id: user_id, log_id },
       include: [
         { 
           model: SetLog,
@@ -77,6 +78,7 @@ export const workoutLogRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'log-found',
         log
       }
     });
@@ -95,11 +97,11 @@ export const workoutLogRouter = Router()
 .post("/", userAuthenticated, userNotDisabled, userCompleted, userMod, [
   body('name').isLength({ max: 50 }).trim().escape(),
   body('date').isDate(),
-  body('exercises.exercise_id').isInt(),
-  body('exercises.order').isInt(),
-  body('exercises.repetitions').isInt(),
-  body('exercises.value').isInt(),
-  body('exercises.unit').isLength({ min: 1, max: 10}).trim().escape(),
+  body('exercises.*.exercise_id').isInt(),
+  body('exercises.*.order').isInt(),
+  body('exercises.*.repetitions').isInt(),
+  body('exercises.*.value').isInt(),
+  body('exercises.*.unit').trim().escape().isIn(['kg', 'lbs']),
 ], validParameters, async (req: express.Request, res: express.Response) => {
   try {
 
@@ -127,6 +129,7 @@ export const workoutLogRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'log-created',
         log: newLog
       }
     });
@@ -144,13 +147,13 @@ export const workoutLogRouter = Router()
 })
 
 .post("/:log_id/update", userAuthenticated, userNotDisabled, userCompleted, [
-  body('name').isLength({ max: 50 }).trim().escape(),
-  body('date').isDate(),
-  body('exercises.exercise_id').isInt(),
-  body('exercises.order').isInt(),
-  body('exercises.repetitions').isInt(),
-  body('exercises.value').isInt(),
-  body('exercises.unit').isLength({ min: 1, max: 10}).trim().escape(),
+  body('name').optional().isLength({ max: 50 }).trim().escape(),
+  body('date').optional().isDate(),
+  body('exercises.*.exercise_id').isInt(),
+  body('exercises.*.order').isInt(),
+  body('exercises.*.repetitions').isInt(),
+  body('exercises.*.value').isInt(),
+  body('exercises.*.unit').isLength({ min: 1, max: 10}).trim().escape(),
 ], validParameters, async (req: express.Request, res: express.Response) => {
   try {
 
@@ -160,7 +163,7 @@ export const workoutLogRouter = Router()
     
     const { exercises } = req.body;
 
-    const OldLog = await WorkoutLog.findOne({ where: { log_id, user_id }});
+    const OldLog = await WorkoutLog.findOne({ where: { log_id, author_id: user_id }});
 
     if (!OldLog) {
       return res.status(400).json({
@@ -217,7 +220,7 @@ export const workoutLogRouter = Router()
 
     const { user_id } = req.user as APIUser;
 
-    const OldLog = await WorkoutLog.findOne({ where: { log_id, user_id }});
+    const OldLog = await WorkoutLog.findOne({ where: { log_id, author_id: user_id }});
 
     if (!OldLog) {
       return res.status(400).json({

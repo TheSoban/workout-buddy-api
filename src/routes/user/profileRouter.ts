@@ -77,7 +77,7 @@ export const profileRouter = Router()
   body('height').optional().isInt(),
   body('sex').optional().trim().isIn(["M", "F", "O"]),
   body('date_of_birth').optional().isDate().escape()
-], validParameters, async (req: express.Request, res: express.Response, next: any) => {
+], validParameters, async (req: express.Request, res: express.Response) => {
   try {
 
     const { user_id } = req.user as APIUser;

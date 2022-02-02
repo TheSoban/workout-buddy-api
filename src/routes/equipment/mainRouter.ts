@@ -14,6 +14,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'equipment-found',
         equipment
       }
     });
@@ -49,6 +50,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'equipment-found',
         equipment
       }
     });
@@ -82,6 +84,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'equipment-created',
         equipment: newEquipment
       }
     });
@@ -99,7 +102,7 @@ export const mainRouter = Router()
 })
 
 .post("/:equipment_id/update", userAuthenticated, userNotDisabled, userCompleted, userMod, [
-  body('name').trim().isLength({ min: 1, max: 50 }).escape(),
+  body('name').optional().trim().isLength({ min: 1, max: 50 }).escape(),
 ], validParameters, async (req: express.Request, res: express.Response) => {
   try {
 

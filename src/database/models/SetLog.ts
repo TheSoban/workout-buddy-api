@@ -1,4 +1,4 @@
-import { Model, Table, Column, AutoIncrement, PrimaryKey, AllowNull, DataType, ForeignKey, BelongsTo } from "sequelize-typescript"
+import { Model, Table, Column, IsIn, AutoIncrement, PrimaryKey, AllowNull, DataType, ForeignKey, BelongsTo } from "sequelize-typescript"
 
 import { WorkoutLog, Exercise } from './'
 
@@ -22,7 +22,8 @@ class SetLog extends Model {
   value: number;
 
   @AllowNull(false)
-  @Column(DataType.STRING(10))
+  @IsIn([['kg', 'lbs']])
+  @Column(DataType.STRING(3))
   unit: string;
 
   @ForeignKey(() => WorkoutLog)

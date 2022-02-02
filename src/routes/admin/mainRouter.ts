@@ -31,6 +31,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'users-found',
         users: users.map(user => ({
           user_id: user.user_id,
           provider: user.provider,
@@ -87,6 +88,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'user-found',
         user
       }
     });
@@ -127,6 +129,7 @@ export const mainRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'user-updated',
         user
       }
     });

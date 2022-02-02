@@ -36,6 +36,7 @@ export const workoutBlueprintRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'blueprints-found',
         blueprints
       }
     });
@@ -85,6 +86,7 @@ export const workoutBlueprintRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'blueprint-found',
         blueprint
       }
     });
@@ -131,6 +133,7 @@ export const workoutBlueprintRouter = Router()
     return res.status(200).json({
       status: 'success',
       response: {
+        message: 'blueprint-created',
         blueprint: newBlueprint
       }
     });
