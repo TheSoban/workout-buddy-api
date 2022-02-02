@@ -94,7 +94,7 @@ export const workoutLogRouter = Router()
   }
 })
 
-.post("/", userAuthenticated, userNotDisabled, userCompleted, userMod, [
+.post("/", userAuthenticated, userNotDisabled, userCompleted, [
   body('name').isLength({ max: 50 }).trim().escape(),
   body('date').isDate(),
   body('exercises.*.exercise_id').isInt(),
